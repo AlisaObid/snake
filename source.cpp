@@ -1,25 +1,65 @@
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp> 
+#include <iostream>
+#include <time.h>
+#include <conio.h>
+#include "Graphic.h"
+#include "Map.h"
+#include <chrono>
+#include <future>
+
+//#define W 87
+
+void timer() 
+{
+	auto start = std::chrono::high_resolution_clock::now();
+	std::this_thread::sleep_until(start + std::chrono::seconds(1));
+}
+
+
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(1100, 1100), "SFML Works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+	sf::RenderWindow window(sf::VideoMode(1025, 1025), "Alisa Studio Works!"); //открываем окно sfml
+	Graphic graphic(window); //для вызова функций класса graphic
+	Map map; //для вызова функций класса map
+	char mMove = 'd';
+	auto old = std::chrono::high_resolution_clock::now();
+	while (window.isOpen()) // пока окно открыто
+	{
+		//graphic.SetBackground(sf::Color(15, 15, 15, 255));
+		if (std::chrono::high_resolution_clock::now() > old + std::chrono::seconds(1)) //прошла одна секунда после последнего движения змейки
+		{
+			map.Play(mMove, graphic); //меняем карту
+			old = std::chrono::high_resolution_clock::now();
+		}
 
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-
-        window.clear(sf::Color(102, 153, 255));
-        shape.setFillColor(sf::Color(255, 102, 102));
-        window.draw(shape);
-        window.display();
-    }
-
-    return 0;
+		///window.clear(); //стираем все, что было на экране
+		//graphic.SetBackground(sf::Color(15, 15, 15, 255));
+		sf::Event event; //показывает действия пользователя
+		while (window.pollEvent(event)) //игрок что-то делает
+		{
+			if (event.type == sf::Event::Closed) //закрывает ли пользователь окно
+				window.close(); // закрыть окно
+			if (event.type == sf::Event::KeyReleased) //вводим любой символ
+			{
+				
+				if (event.key.code == sf::Keyboard::Key::D)
+				{
+					mMove = 'd';
+				}
+				else if (event.key.code == sf::Keyboard::Key::S)
+				{
+					mMove = 's';
+				}
+				else if (event.key.code == sf::Keyboard::Key::A)
+				{
+					mMove = 'a';
+				}
+				else if (event.key.code == sf::Keyboard::Key::W)
+				{
+					mMove = 'w';
+				}
+			}
+		}
+	}
 }
-//255, 102, 217
+//добавить функцию dplus в класс smey и использовать в функции hod
